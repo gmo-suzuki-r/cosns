@@ -16,7 +16,8 @@
         <p><img src='{{ object.snsimage.url }}' width="300"></p>
         <a href="{% url 'good' object.pk %}" class="btn btn-primary" tabindex="-1" role="button"
             aria-disabled="true">いいね</a>
-        <a href="#" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">既読</a>
+        <a href="{% url 'read' object.pk %}" class="btn btn-secondary" tabindex="-1" role="button"
+            aria-disabled="true">既読</a>
     </div>
 </div>
 {% else %}

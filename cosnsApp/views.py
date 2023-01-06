@@ -4,6 +4,8 @@ from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from .models import cosnsModel
 from django.contrib.auth.decorators import login_required
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
 
 # Create your views here.
 
@@ -14,7 +16,7 @@ def signupfunc(request):
         password = request.POST.get("password")
         try:
             user = User.objects.create_user(username, '', password)
-            return render(request, "signup.html", {"some": 100})
+            return redirect('login')
         except IntegrityError:
             return render(request, "signup.html", {"error": "このユーザはすでに登録されています。"})
     return render(request, "signup.html")
@@ -58,3 +60,18 @@ def goodfunc(request, pk):
 
 def readfunc(request, pk):
     object = cosnsModel.objects.get(pk=pk)
+    username = request.user.get_username()
+    if username in object.readtext:
+        return redirect('list')
+    else:
+        object.read = object.read + 1
+        object.readtext = object.readtext + ' ' + username
+        object.save()
+        return redirect('list')
+
+
+class cosnsCreate(CreateView):
+    template_name = 'create.html'
+    model = cosnsModel
+    fields = ('title', 'content', 'author', 'snsimage')
+    success_url = reverse_lazy('list')
